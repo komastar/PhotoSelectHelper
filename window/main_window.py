@@ -1,6 +1,7 @@
 import os
 import sys
 import platform
+import shutil
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtWidgets import QFileDialog
@@ -48,6 +49,8 @@ class MainWindow(QMainWindow, ui_class):
         self.target_directory_button = None
         self.copy_button: QPushButton
         self.copy_button = None
+        self.move_button: QPushButton
+        self.move_button = None
         self.progress_bar: QProgressBar
         self.progress_bar = None
         self.__selected_path: str
@@ -62,6 +65,7 @@ class MainWindow(QMainWindow, ui_class):
         self.select_directory_button.clicked.connect(self.__on_click_select)
         self.target_directory_button.clicked.connect(self.__on_click_target)
         self.copy_button.clicked.connect(self.__on_click_copy)
+        self.move_button.clicked.connect(self.__on_click_move)
 
     def __on_click_select(self):
         self.__selected_path = QFileDialog.getExistingDirectory(self, 'Select Directory')
@@ -72,14 +76,20 @@ class MainWindow(QMainWindow, ui_class):
         self.target_directory_path_edit.setText(self.__target_path)
 
     def __on_click_copy(self):
+        self.__do_select(shutil.copy)
+
+    def __on_click_move(self):
+        self.__do_select(shutil.move)
+
+    def __do_select(self, action):
         if not self.__is_valid():
             return
 
         selected_text_path = os.path.join(self.__selected_path, 'selected.txt')
         if os.path.exists(selected_text_path):
-            SelectFromText.select(selected_text_path, self.__target_path, self.__on_update_progress)
+            SelectFromText.select(selected_text_path, self.__target_path, action, self.__on_update_progress)
         else:
-            SelectFromFiles.select(self.__selected_path, self.__target_path, self.__on_update_progress)
+            SelectFromFiles.select(self.__selected_path, self.__target_path, action, self.__on_update_progress)
 
     def __is_valid(self):
         if self.__selected_path == '' or self.__target_path == '':

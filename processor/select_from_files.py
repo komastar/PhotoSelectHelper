@@ -1,12 +1,11 @@
 import os
-import shutil
 
 extension_list = ['jpg', 'jpeg', 'crw', 'cr2', 'cr3', 'arw', 'nef', 'nrw', 'dng', 'raw', 'raf', 'tiff', 'xmp']
 
 
 class SelectFromFiles:
     @staticmethod
-    def select(select_path, target_path, progress_callback):
+    def select(select_path, target_path, action, progress_callback):
         selected_file_list = os.listdir(select_path)
         dst_dir_path = os.path.join(target_path, 'selected')
         if not os.path.exists(dst_dir_path):
@@ -22,7 +21,7 @@ class SelectFromFiles:
                 src = f'{src_full_path}.{ext}'
                 dst = f'{dst_full_path}.{ext}'
                 if os.path.exists(src):
-                    shutil.move(src, dst)
+                    action(src, dst)
             process_count += 1
             progress_callback(process_count * ratio_factor)
 

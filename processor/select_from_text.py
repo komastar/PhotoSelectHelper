@@ -1,10 +1,9 @@
 import os
-import shutil
 
 
 class SelectFromText:
     @staticmethod
-    def select(select_file_path, candidate_path, progress_callback):
+    def select(select_file_path, candidate_path, action, progress_callback):
         select_number_list = []
         with open(select_file_path) as select_file:
             for select_number in select_file:
@@ -24,6 +23,6 @@ class SelectFromText:
         for selected_filename in select_list:
             source = os.path.join(candidate_path, selected_filename)
             dest = os.path.join(candidate_path, 'selected', selected_filename)
-            shutil.move(source, dest)
+            action(source, dest)
             process_count += 1
             progress_callback(process_count * ratio_factor)
