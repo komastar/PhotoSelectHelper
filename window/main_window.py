@@ -13,12 +13,17 @@ from PyQt6.QtWidgets import QProgressBar
 from processor.select_from_files import SelectFromFiles
 from processor.select_from_text import SelectFromText
 
-ui_data = ''
-if platform.system() == 'Windows':
-    ui_data = os.path.join(os.getcwd(), 'resources/ui/app_window.ui')
+
+exec_path = ''
+if len(sys.argv) > 1 and sys.argv[1] == '-debug':
+    exec_path = os.getcwd()
 else:
-    exec_path = os.path.dirname(sys.executable)
-    ui_data = os.path.join(exec_path, 'resources/ui/app_window.ui')
+    if platform.system() == 'Windows':
+        exec_path = os.getcwd()
+    else:
+        exec_path = os.path.dirname(sys.executable)
+
+ui_data = os.path.join(exec_path, 'resources/ui/app_window.ui')
 ui_class = uic.loadUiType(ui_data)[0]
 
 
